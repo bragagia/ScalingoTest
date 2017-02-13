@@ -10,6 +10,10 @@
   <![endif]-->
 </head>
 <body>
-	<p>search</p>
+	{{if .Item}}
+	<p>Searching for {{.Item}}</p>
+	{{else}}
+	<p>Listing all items</p>
+	{{end}}
 </body>
 </html>

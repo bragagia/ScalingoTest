@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"html/template"
+	"fmt"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -12,8 +13,17 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	data := struct { }{ }
-	t, _ := template.ParseFiles("templates/search.html")
+	data := struct {
+		Item string
+	}{
+		Item: r.URL.Query().Get("item"),
+	}
+
+	t, err := template.ParseFiles("templates/search.html")
+	if err != nil {
+		fmt.Print(err)
+	}
+
 	t.Execute(w, &data)
 }
 
