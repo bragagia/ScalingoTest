@@ -1,15 +1,24 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+	"html/template"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "%s", r.URL.Path[1:])
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	data := struct { }{ }
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, &data)
+}
+
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	data := struct { }{ }
+	t, _ := template.ParseFiles("templates/search.html")
+	t.Execute(w, &data)
 }
 
 func main() {
-	http.HandleFunc("/", handler)
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/search", searchHandler)
 	http.ListenAndServe(":8080", nil)
 }
