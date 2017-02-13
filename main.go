@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"html/template"
 	"fmt"
+	//"github.com/google/go-github/github"
 )
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
@@ -14,9 +15,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
-		Item string
+		Query string
 	}{
-		Item: r.URL.Query().Get("item"),
+		Query: r.URL.Query().Get("query"),
 	}
 
 	t, err := template.ParseFiles("templates/search.html")
