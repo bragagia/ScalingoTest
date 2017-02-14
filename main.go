@@ -1,9 +1,12 @@
 package main
 
 import (
+	"os"
+	"time"
 	"net/http"
 	"html/template"
 	"fmt"
+	"strings"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
 )
@@ -13,12 +16,13 @@ type RepoInfos struct {
 	Languages map[string]int
 }
 
-var ghClient *github.Client
-
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("templates/index.html")
-	t.Execute(w, nil)
+type LanguageInfos struct {
+	Language string
+	Repos map[string]int
+	Total int
 }
+
+var ghClient *github.Client
 
 func GetRepoInfos(r github.Repository, c chan RepoInfos) {
 	var ri RepoInfos
@@ -33,11 +37,12 @@ func GetRepoInfos(r github.Repository, c chan RepoInfos) {
 	c <- ri
 }
 
-func GetList(q string) (*[100]RepoInfos) {
+func GetList() (*[100]RepoInfos) {
 	opt := &github.SearchOptions{
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
-	orgs, _, err := ghClient.Search.Repositories("created:>=2017-02-13T23:25:00+01:00", opt)
+	current_time := time.Now().UTC()
+	orgs, _, err := ghClient.Search.Repositories("created:>=" + current_time.Format("2006-01-02"), opt)
 
 	if err != nil {
 		fmt.Print(err, "\n")
@@ -61,15 +66,63 @@ func GetList(q string) (*[100]RepoInfos) {
 	return &res
 }
 
+func GetLanguagesList(rl [100]RepoInfos) (*[]LanguageInfos) {
+	var res []LanguageInfos
+
+	for _, repo := range rl {
+		for lang, langBytes := range repo.Languages {
+			found := false
+			for _, reslang := range res {
+				if (reslang.Language == lang) {
+					reslang.Repos[repo.FullName] = langBytes
+					reslang.Total += langBytes
+					found = true
+				}
+			}
+			if !found {
+				var li LanguageInfos
+				li.Language = lang
+				li.Repos = make(map[string]int)
+				li.Repos[repo.FullName] = langBytes
+				li.Total += langBytes
+				res = append(res, li)
+			}
+		}
+	}
+
+	return &res
+}
+
+func FilterList(list []LanguageInfos, q string) ([]LanguageInfos) {
+	var res []LanguageInfos
+
+	f := func (li LanguageInfos) (bool) {
+		if (strings.Contains(strings.ToLower(li.Language), strings.ToLower(q))) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	for _, x := range list {
+		if f(x) {
+			res = append(res, x)
+		}
+	}
+
+	return res
+}
+
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	data := struct {
 		Query string
-		Repos [100]RepoInfos
+		Languages []LanguageInfos
 	}{
 		Query: r.URL.Query().Get("query"),
 	}
 
-	data.Repos = *GetList(data.Query)
+	repos := *GetList()
+	data.Languages = FilterList(*GetLanguagesList(repos), data.Query)
 
 	t, err := template.ParseFiles("templates/search.html")
 	if err != nil {
@@ -79,9 +132,14 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, &data)
 }
 
-func ghAuth() {
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, nil)
+}
+
+func ghAuth(t string) {
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: "537b73a46b51212bd8c394b9ec53504c585486cc"},
+		&oauth2.Token{AccessToken: t},
 	)
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
@@ -89,7 +147,13 @@ func ghAuth() {
 }
 
 func main() {
-	ghAuth()
+	if (len(os.Args) > 1) {
+		ghAuth(os.Args[1])
+	} else {
+		fmt.Print("Running without login to API.\n")
+		fmt.Print("run: ScalingoTest GITHUBAPIKEY\n")
+		ghClient = github.NewClient(nil)
+	}
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/search", searchHandler)
 	http.ListenAndServe(":8080", nil)

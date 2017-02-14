@@ -6,12 +6,13 @@
 		<meta name="description" content="ScalingoTest search engine for GitHub">
 		<meta name="author" content="Mathias Bragagia">
 		<style>
-			.repo-name
+			.lang-title
 			{
 				color: rgb(34, 80, 230);
 				margin: 0;
+				margin-top: 10px;
 			}
-			.repo-language
+			.lang-repo, .lang-repo a
 			{
 				color: rgb(230, 80, 34);
 				margin: 0;
@@ -24,14 +25,14 @@
 	</head>
 	<body>
 		{{if .Query}}
-			<p>Searching for {{.Query}}</p>
+			<h2>Searching for {{.Query}}</h2>
 		{{else}}
-			<p>Listing all items</p>
+			<h2>Listing all items</h2>
 		{{end}}
-		{{range .Repos}}
-			<p class="repo-name">- {{.FullName}}</p>
-			{{range $index, $element := .Languages}}
-				<p class="repo-language">- {{$index}}</p>
+		{{range .Languages}}
+			<p class="lang-title">- {{.Language}} : {{.Total}} bytes</p>
+			{{range $index, $element := .Repos}}
+				<p class="lang-repo">- <a href="http://github.com/{{$index}}">{{$index}}</a> : {{$element}}</p>
 			{{end}}
 		{{end}}
 	</body>
