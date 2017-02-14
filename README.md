@@ -34,48 +34,43 @@ Access it through http://localhost:8080
 Handle program arguments and launch webserver
 
 ### ghAuth(t)
-t: OAuth2 token to use
+- t: OAuth2 token to use
 
 Enable OAuth2 Authentification.
 
 ### indexHandler(w, r)
-w: Object to answer request
-
-r: Request infos
+- w: Object to answer request
+- r: Request infos
 
 Handle home page. Use ./templates/index.html as template.
 
 ### searchHandler(w, r)
-w: Object to answer request
-
-r: Request infos
+- w: Object to answer request
+- r: Request infos
 
 Handle search results page. Use ./templates/search.html as template.
 
 ### getList()
-return: Repo list
+- return: Repo list
 
 Use GitHub API to get 100 random repos of the current date.
 Get languages informations asynchronously with getRepoInfos()
 
 ### getRepoInfos(r, c)
-r: GitHub repository
-
-c: Output chanel
+- r: GitHub repository
+- c: Output chanel
 
 Use GitHub API to get language use informations of the given repo.
 
 ### getLanguageList(rl)
-rl: Repos list
-
-return: Languages list
+- rl: Repos list
+- return: Languages list
 
 Convert the repo list containing a list of language used into a list of language with the list of repositories which use it.
 
 ### FilterList(list, q)
-list: Language list
-
-q: Word query
+- list: Language list
+- q: Word query
 
 return: Language list filtered
 
