@@ -24,7 +24,7 @@ type LanguageInfos struct {
 
 var ghClient *github.Client
 
-func GetRepoInfos(r github.Repository, c chan RepoInfos) {
+func getRepoInfos(r github.Repository, c chan RepoInfos) {
 	var ri RepoInfos
 	ri.FullName = *r.FullName
 
@@ -37,7 +37,7 @@ func GetRepoInfos(r github.Repository, c chan RepoInfos) {
 	c <- ri
 }
 
-func GetList() (*[100]RepoInfos) {
+func getList() (*[100]RepoInfos) {
 	opt := &github.SearchOptions{
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
@@ -53,7 +53,7 @@ func GetList() (*[100]RepoInfos) {
 
 	i := 0
 	for _, r := range orgs.Repositories {
-		go GetRepoInfos(r, c)
+		go getRepoInfos(r, c)
 		i++
 	}
 
@@ -66,7 +66,7 @@ func GetList() (*[100]RepoInfos) {
 	return &res
 }
 
-func GetLanguagesList(rl [100]RepoInfos) (*[]LanguageInfos) {
+func getLanguagesList(rl [100]RepoInfos) (*[]LanguageInfos) {
 	var res []LanguageInfos
 
 	for _, repo := range rl {
@@ -121,8 +121,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		Query: r.URL.Query().Get("query"),
 	}
 
-	repos := *GetList()
-	data.Languages = FilterList(*GetLanguagesList(repos), data.Query)
+	repos := *getList()
+	data.Languages = FilterList(*getLanguagesList(repos), data.Query)
 
 	t, err := template.ParseFiles("templates/search.html")
 	if err != nil {
@@ -157,4 +157,5 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/search", searchHandler)
 	http.ListenAndServe(":8080", nil)
+	fmt.Print("ScalingoTest available on http://localhost:8080")
 }
