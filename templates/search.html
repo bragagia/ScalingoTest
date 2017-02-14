@@ -1,19 +1,32 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>ScalingoTest</title>
-  <meta name="description" content="ScalingoTest search engine for GitHub">
-  <meta name="author" content="Mathias Bragagia">
-  <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-  <![endif]-->
-</head>
-<body>
-	{{if .Query}}
-	<p>Searching for {{.Query}}</p>
-	{{else}}
-	<p>Listing all items</p>
-	{{end}}
-</body>
+	<head>
+		<meta charset="utf-8">
+		<title>ScalingoTest</title>
+		<meta name="description" content="ScalingoTest search engine for GitHub">
+		<meta name="author" content="Mathias Bragagia">
+		<style>
+			.repo-name
+			{
+				color: rgb(34, 80, 230);
+				margin: 0;
+			}
+		</style>
+		<!--[if lt IE 9]>
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	<body>
+		{{if .Query}}
+			<p>Searching for {{.Query}}</p>
+		{{else}}
+			<p>Listing all items</p>
+		{{end}}
+		{{range .Repos}}
+			<p class="repo-name">- {{.FullName}}</p>
+			{{range .Languages}}
+				<p class="repo-language">{{.Key}}</p>
+			{{end}}
+		{{end}}
+	</body>
 </html>
