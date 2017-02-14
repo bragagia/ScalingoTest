@@ -5,11 +5,11 @@ Technical test for Scalingo.
 
 ScalingoTest allow you to search within 100 random GitHub repos of the current day.
 
-It show the result sorted by language which are used in the project.
+It show the results sorted by language which are used in the repo.
 
 ## Installation
 
-Run the folowing commands :
+Run the following commands :
 ```
 go get github.com/google/go-github/github
 go get golang.org/x/oauth2
@@ -19,7 +19,7 @@ go install ScalingoTest
 
 ### Usage
 
-Run `ScalingoTest` inside the git directory. Pass it your GitHub API Key as argument to unblock the rate limit.
+Run `ScalingoTest` inside of the git directory. Pass it your GitHub API Key as argument to unblock the rate limit.
 
 Example :
 ```
