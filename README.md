@@ -77,5 +77,8 @@ return: Language list filtered
 Filter the language list by eliminating those which not contain the given word.
 
 # License
+The code of this project is under GPL-2.0.
+
 Feel free to fork the repository and send pull request.
+
 **This is a unmaintainted repo**
