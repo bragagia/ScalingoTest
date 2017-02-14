@@ -40,12 +40,14 @@ Enable OAuth2 Authentification.
 
 ### indexHandler(w, r)
 w: Object to answer request
+
 r: Request infos
 
 Handle home page. Use ./templates/index.html as template.
 
 ### searchHandler(w, r)
 w: Object to answer request
+
 r: Request infos
 
 Handle search results page. Use ./templates/search.html as template.
@@ -58,18 +60,23 @@ Get languages informations asynchronously with getRepoInfos()
 
 ### getRepoInfos(r, c)
 r: GitHub repository
+
 c: Output chanel
 
 Use GitHub API to get language use informations of the given repo.
 
 ### getLanguageList(rl)
 rl: Repos list
+
 return: Languages list
 
 Convert the repo list containing a list of language used into a list of language with the list of repositories which use it.
 
 ### FilterList(list, q)
 list: Language list
+
+q: Word query
+
 return: Language list filtered
 
 Filter the language list by eliminating those which not contain the given word.
