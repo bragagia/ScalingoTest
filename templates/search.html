@@ -11,6 +11,12 @@
 				color: rgb(34, 80, 230);
 				margin: 0;
 			}
+			.repo-language
+			{
+				color: rgb(230, 80, 34);
+				margin: 0;
+				margin-left: 10px;
+			}
 		</style>
 		<!--[if lt IE 9]>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
@@ -24,8 +30,8 @@
 		{{end}}
 		{{range .Repos}}
 			<p class="repo-name">- {{.FullName}}</p>
-			{{range .Languages}}
-				<p class="repo-language">{{.Key}}</p>
+			{{range $index, $element := .Languages}}
+				<p class="repo-language">- {{$index}}</p>
 			{{end}}
 		{{end}}
 	</body>
