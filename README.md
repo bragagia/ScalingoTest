@@ -27,7 +27,7 @@ Example :
 
 Access it through http://localhost:8080
 
-## How it work
+## How it works
 
 ### main()
 Handle program arguments and launch webserver
